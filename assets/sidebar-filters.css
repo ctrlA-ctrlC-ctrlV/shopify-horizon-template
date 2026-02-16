@@ -45,12 +45,12 @@
    ========================================================================== */
 .sidebar-filters {
   display: none;
+  visibility: hidden;
+  position: absolute;
+  left: -9999px;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--sidebar-border-color);
   height: fit-content;
-  position: sticky;
-  top: calc(var(--header-height, 60px) + var(--padding-md));
-  max-height: calc(100vh - var(--header-height, 60px) - var(--padding-lg));
   overflow: hidden;
   transition: width var(--sidebar-transition-duration) var(--sidebar-transition-easing);
 }
@@ -58,6 +58,11 @@
 @media screen and (min-width: 750px) {
   .sidebar-filters {
     display: block;
+    visibility: visible;
+    position: sticky;
+    left: auto;
+    top: calc(var(--header-height, 60px) + var(--padding-md));
+    max-height: calc(100vh - var(--header-height, 60px) - var(--padding-lg));
     width: var(--sidebar-width);
     min-width: var(--sidebar-min-width);
     max-width: var(--sidebar-max-width);
@@ -287,13 +292,32 @@
 }
 
 .sidebar-filters-drawer__dialog {
-  display: flex;
+  display: none;
   flex-direction: column;
   width: min(90vw, 400px);
   height: 100vh;
   max-height: 100vh;
   padding: 0;
   background-color: var(--color-background);
+  border: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  margin: 0;
+  transform: translateX(100%);
+  transition: transform var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+  z-index: var(--z-index-drawer, 1000);
+}
+
+.sidebar-filters-drawer__dialog[open] {
+  display: flex;
+  transform: translateX(0);
+}
+
+.sidebar-filters-drawer__dialog::backdrop {
+  background-color: rgb(0 0 0 / 0.5);
 }
 
 .sidebar-filters-drawer__header {
