@@ -1,0 +1,326 @@
+{%- doc -%}
+  Renders a sidebar filter component for collection pages.
+  This component displays filters in a collapsible sidebar on desktop
+  and maintains a drawer on mobile.
+
+  @param {object} collection - The collection object containing products and filters
+  @param {object} section - The section object
+  @param {object} block_settings - Filter block settings
+{%- enddoc -%}
+
+<script
+  src="{{ 'facets.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<script
+  src="{{ 'scrolling.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{%- liquid
+  assign filters = collection.filters
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign results_url = collection.url
+  assign products_count = collection.products_count
+  assign total_active_values = 0
+  assign is_active = false
+
+  for filter in filters
+    case filter.type
+      when 'price_range'
+        if filter.min_value.value != null or filter.max_value.value != null
+          assign total_active_values = total_active_values | plus: 1
+          assign is_active = true
+        endif
+      when 'boolean'
+        if filter.active_values[0].value
+          assign total_active_values = total_active_values | plus: 1
+          assign is_active = true
+        endif
+      else
+        assign active_value_count = filter.active_values | size
+        assign total_active_values = total_active_values | plus: active_value_count
+        if active_value_count > 0
+          assign is_active = true
+        endif
+    endcase
+  endfor
+
+  assign sidebar_collapsed = false
+  if block_settings.sidebar_default_collapsed
+    assign sidebar_collapsed = true
+  endif
+-%}
+
+{%- comment -%} Sidebar Filter Container {%- endcomment -%}
+<aside
+  class="sidebar-filters{% if sidebar_collapsed %} sidebar-filters--collapsed{% endif %}"
+  id="sidebar-filters"
+  data-sidebar-filters
+  aria-label="{{ 'accessibility.filters' | t }}"
+>
+  {%- comment -%} Sidebar Header with Toggle {%- endcomment -%}
+  <div class="sidebar-filters__header">
+    <button
+      type="button"
+      class="sidebar-filters__toggle button-unstyled"
+      data-sidebar-toggle
+      aria-expanded="{% if sidebar_collapsed %}false{% else %}true{% endif %}"
+      aria-controls="sidebar-filters-content"
+    >
+      <span class="sidebar-filters__toggle-icon">
+        <svg class="sidebar-filters__icon-filter" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="sidebar-filters__title h5">
+        {{ 'content.filters' | t }}
+        {% if total_active_values > 0 %}
+          <span class="sidebar-filters__count-badge" aria-label="{{ 'accessibility.filter_count' | t: count: total_active_values }}">
+            {{ total_active_values }}
+          </span>
+        {% endif %}
+      </span>
+      <span class="sidebar-filters__toggle-arrow">
+        <svg class="icon-caret" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  {%- comment -%} Sidebar Content {%- endcomment -%}
+  <div
+    class="sidebar-filters__content"
+    id="sidebar-filters-content"
+    {% if sidebar_collapsed %}hidden{% endif %}
+  >
+    <facets-form-component
+      class="sidebar-filters__form-wrapper"
+      section-id="{{ section.id }}"
+      form-style="vertical"
+    >
+      <form
+        action="{{ results_url }}"
+        id="SidebarFiltersForm--{{ section.id }}"
+        class="sidebar-filters__form"
+        ref="facetsForm"
+      >
+        {%- comment -%} Active Filters Pills {%- endcomment -%}
+        {% if is_active %}
+          <div class="sidebar-filters__active-filters">
+            {% render 'filter-remove-buttons',
+              filters: filters,
+              results_url: results_url,
+              show_filter_label: true,
+              should_show_clear_all: true
+            %}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Filter Groups {%- endcomment -%}
+        <div class="sidebar-filters__groups">
+          {%- for filter in filters -%}
+            {% case filter.type %}
+              {% when 'price_range' %}
+                {%- render 'price-filter',
+                  filter: filter,
+                  filter_style: 'vertical',
+                  should_render_clear: false
+                -%}
+              {% else %}
+                {%- liquid
+                  assign active_value_count = filter.active_values | size
+                  render 'list-filter',
+                    filter: filter,
+                    filter_style: 'vertical',
+                    active_value_count: active_value_count,
+                    should_render_clear: false,
+                    show_swatch_label: block_settings.show_swatch_label,
+                    sectionId: section.id
+                -%}
+            {% endcase %}
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Sidebar Actions {%- endcomment -%}
+        <div class="sidebar-filters__actions">
+          {% render 'facets-actions',
+            results_url: results_url,
+            is_active: is_active,
+            products_count: products_count,
+            should_show_clear_all: true,
+            clear_all_button_style: 'button-unstyled'
+          %}
+        </div>
+      </form>
+    </facets-form-component>
+  </div>
+</aside>
+
+{%- comment -%} Mobile Filter Toggle (visible on mobile only) {%- endcomment -%}
+<div class="sidebar-filters-mobile-toggle">
+  <button
+    class="button button-unstyled button-unstyled--with-icon sidebar-filters-mobile-toggle__button"
+    type="button"
+    on:click="#filters-drawer/showDialog"
+    aria-label="{{ 'actions.show_filters' | t }}"
+  >
+    <span class="svg-wrapper">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>{{ 'actions.show_filters' | t }}</span>
+    {% if total_active_values > 0 %}
+      <span class="sidebar-filters__count-badge">{{ total_active_values }}</span>
+    {% endif %}
+  </button>
+</div>
+
+{%- comment -%} Mobile Filter Drawer {%- endcomment -%}
+<dialog-component
+  id="filters-drawer"
+  class="sidebar-filters-drawer color-{{ settings.drawer_color_scheme }}"
+>
+  <dialog
+    ref="dialog"
+    class="sidebar-filters-drawer__dialog dialog-modal drawer dialog-drawer dialog-drawer--right"
+    scroll-lock
+    aria-labelledby="filters-drawer-heading"
+  >
+    <facets-form-component
+      class="sidebar-filters-drawer__form-wrapper"
+      section-id="{{ section.id }}"
+      id="SidebarFiltersFormDrawer--{{ section.id }}"
+    >
+      <form
+        action="{{ results_url }}"
+        id="SidebarFiltersFormDrawer--{{ section.id }}-form"
+        class="sidebar-filters-drawer__form"
+        ref="facetsForm"
+      >
+        <div class="sidebar-filters-drawer__header">
+          <h2 id="filters-drawer-heading" class="sidebar-filters-drawer__title h3">
+            {{ 'blocks.filter' | t }}
+            {% if total_active_values > 0 %}
+              <span class="bubble sidebar-filters__bubble" aria-hidden="true">{{ total_active_values }}</span>
+              <span class="visually-hidden">{{ 'accessibility.filter_count' | t: count: total_active_values }}</span>
+            {% endif %}
+          </h2>
+          <button
+            class="button button-unstyled close-button sidebar-filters-drawer__close"
+            type="button"
+            on:click="dialog-component/closeDialog"
+          >
+            <span class="svg-wrapper svg-wrapper--small" title="{{ 'actions.close' | t }}">
+              {{ 'icon-close.svg' | inline_asset_content }}
+            </span>
+          </button>
+        </div>
+
+        <scroll-hint class="sidebar-filters-drawer__content">
+          {%- comment -%} Active Filters Pills {%- endcomment -%}
+          {% if is_active %}
+            <div class="sidebar-filters__active-filters">
+              {% render 'filter-remove-buttons',
+                filters: filters,
+                results_url: results_url,
+                show_filter_label: true,
+                should_show_clear_all: false
+              %}
+            </div>
+          {% endif %}
+
+          {%- comment -%} Filter Groups {%- endcomment -%}
+          <div class="sidebar-filters__groups">
+            {%- for filter in filters -%}
+              {% case filter.type %}
+                {% when 'price_range' %}
+                  {%- render 'price-filter',
+                    filter: filter,
+                    filter_style: 'vertical',
+                    should_render_clear: false
+                  -%}
+                {% else %}
+                  {%- liquid
+                    assign active_value_count = filter.active_values | size
+                    render 'list-filter',
+                      filter: filter,
+                      filter_style: 'vertical',
+                      active_value_count: active_value_count,
+                      should_render_clear: false,
+                      in_drawer: true,
+                      show_swatch_label: block_settings.show_swatch_label,
+                      sectionId: section.id
+                  -%}
+              {% endcase %}
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Sorting in Drawer (Mobile) {%- endcomment -%}
+          {% if block_settings.enable_sorting %}
+            {% render 'sorting',
+              results: collection,
+              sort_by: sort_by,
+              filter_style: 'vertical',
+              suffix: 'drawer',
+              should_use_select_on_mobile: false,
+              section_id: section.id
+            %}
+          {% endif %}
+        </scroll-hint>
+      </form>
+    </facets-form-component>
+
+    <div class="sidebar-filters-drawer__actions">
+      {% render 'facets-actions',
+        results_url: results_url,
+        is_active: is_active,
+        products_count: products_count,
+        form_component: 'SidebarFiltersFormDrawer--' | append: section.id,
+        should_show_clear_all: true,
+        clear_all_button_style: 'button-secondary'
+      %}
+    </div>
+  </dialog>
+</dialog-component>
+
+<script>
+  // Sidebar toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('[data-sidebar-filters]');
+    const toggleBtn = document.querySelector('[data-sidebar-toggle]');
+
+    if (sidebar && toggleBtn) {
+      // Load saved state from sessionStorage
+      const savedState = sessionStorage.getItem('sidebar-filters-collapsed');
+      if (savedState !== null) {
+        const isCollapsed = savedState === 'true';
+        sidebar.classList.toggle('sidebar-filters--collapsed', isCollapsed);
+        toggleBtn.setAttribute('aria-expanded', !isCollapsed);
+        const content = document.getElementById('sidebar-filters-content');
+        if (content) {
+          content.hidden = isCollapsed;
+        }
+      }
+
+      toggleBtn.addEventListener('click', function() {
+        const isCurrentlyCollapsed = sidebar.classList.contains('sidebar-filters--collapsed');
+        sidebar.classList.toggle('sidebar-filters--collapsed');
+        toggleBtn.setAttribute('aria-expanded', isCurrentlyCollapsed);
+
+        const content = document.getElementById('sidebar-filters-content');
+        if (content) {
+          content.hidden = !isCurrentlyCollapsed;
+        }
+
+        // Save state to sessionStorage
+        sessionStorage.setItem('sidebar-filters-collapsed', !isCurrentlyCollapsed);
+      });
+    }
+  });
+</script>

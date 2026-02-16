@@ -1,3 +1,4 @@
+{{ 'sidebar-filters.css' | asset_url | stylesheet_tag }}
 
 <script
   src="{{ 'results-list.js' | asset_url }}"
@@ -21,6 +22,11 @@
   }
 {% endjavascript %}
 
+{%- liquid
+  assign enable_sidebar_filters = section.settings.enable_sidebar_filters
+  assign sidebar_default_collapsed = section.settings.sidebar_default_collapsed
+-%}
+
 {% comment %} We always render this full-width, as the child blocks have width: page/full settings {% endcomment %}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <results-list
@@ -31,15 +37,63 @@
 >
   {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
 
+  {% if enable_sidebar_filters %}
+    {%- comment -%} Sidebar Layout Wrapper {%- endcomment -%}
+    <div class="collection-with-sidebar{% if sidebar_default_collapsed %} sidebar-collapsed{% endif %}">
+      {%- comment -%} Render Sidebar Filters {%- endcomment -%}
+      {% render 'sidebar-filters',
+        collection: collection,
+        section: section,
+        block_settings: section.settings
+      %}
+
+      {%- comment -%} Main Content Area {%- endcomment -%}
+      <div class="collection-main-content">
+        {%- comment -%} Controls Bar (Product Count, Sort, Grid Density) {%- endcomment -%}
+        <div class="collection-controls-bar">
+          <div class="collection-controls-bar__left">
+            <span class="collection-controls-bar__count" data-testid="products-count">
+              {% if collection.products_count > 25000 %}
+                {{- 'content.item_count_cutoff' | t: count: 25000 -}}
+              {% else %}
+                {{- 'content.item_count' | t: count: collection.products_count -}}
+              {% endif %}
+            </span>
+          </div>
+          <div class="collection-controls-bar__right">
+            {% if section.settings.enable_sorting %}
+              <facets-form-component section-id="{{ section.id }}">
+                <form action="{{ collection.url }}" id="SortingForm--{{ section.id }}" ref="facetsForm">
+                  {% render 'sorting',
+                    results: collection,
+                    sort_by: collection.sort_by | default: collection.default_sort_by,
+                    filter_style: 'horizontal',
+                    suffix: 'sidebar',
+                    sort_position: 'desktop',
+                    should_use_select_on_mobile: false,
+                    section_id: section.id
+                  %}
+                </form>
+              </facets-form-component>
+            {% endif %}
+            {% if section.settings.enable_grid_density %}
+              {% render 'grid-density-controls', viewport: 'desktop' %}
+            {% endif %}
+          </div>
+        </div>
+  {% endif %}
+
   <div
-    class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"
+    class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}{% if enable_sidebar_filters %} collection-wrapper--with-sidebar{% endif %}"
   >
-    {% content_for 'block',
-      type: 'filters',
-      id: 'filters',
-      results: collection,
-      results_size: collection.products_count
-    %}
+    {% unless enable_sidebar_filters %}
+      {% content_for 'block',
+        type: 'filters',
+        id: 'filters',
+        results: collection,
+        results_size: collection.products_count
+      %}
+    {% endunless %}
 
     {% assign products_per_page = 24 %}
 
@@ -73,6 +127,11 @@
       %}
     {% endpaginate %}
   </div>
+
+  {% if enable_sidebar_filters %}
+      </div>{%- comment -%} .collection-main-content {%- endcomment -%}
+    </div>{%- comment -%} .collection-with-sidebar {%- endcomment -%}
+  {% endif %}
 </results-list>
 
 {% stylesheet %}
@@ -228,6 +287,45 @@
       "step": 4,
       "default": 24,
       "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sidebar_filters",
+      "label": "Enable sidebar filters",
+      "info": "Display filters in a sticky sidebar on desktop. Mobile will use a drawer.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sidebar_default_collapsed",
+      "label": "Collapse sidebar by default",
+      "default": false,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_grid_density",
+      "label": "Enable grid density controls",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatch_label",
+      "label": "Show swatch labels",
+      "default": false,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
     },
     {
       "type": "header",

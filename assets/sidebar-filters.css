@@ -1,0 +1,539 @@
+/*
+ * Sidebar Filters Component Styles
+ * Used for collection page sidebar filtering on desktop
+ * and drawer filtering on mobile
+ */
+
+/* ==========================================================================
+   CSS Custom Properties
+   ========================================================================== */
+:root {
+  --sidebar-width: 280px;
+  --sidebar-min-width: 220px;
+  --sidebar-max-width: 320px;
+  --sidebar-collapsed-width: 50px;
+  --sidebar-padding: var(--padding-md);
+  --sidebar-bg: var(--color-background);
+  --sidebar-border-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+  --sidebar-transition-duration: 0.3s;
+  --sidebar-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Sidebar Container Layout
+   ========================================================================== */
+.collection-with-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+@media screen and (min-width: 750px) {
+  .collection-with-sidebar {
+    grid-template-columns: var(--sidebar-width) 1fr;
+    gap: var(--gap-lg);
+  }
+
+  .collection-with-sidebar.sidebar-collapsed {
+    grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+  }
+}
+
+/* ==========================================================================
+   Sidebar Filters
+   ========================================================================== */
+.sidebar-filters {
+  display: none;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border-color);
+  height: fit-content;
+  position: sticky;
+  top: calc(var(--header-height, 60px) + var(--padding-md));
+  max-height: calc(100vh - var(--header-height, 60px) - var(--padding-lg));
+  overflow: hidden;
+  transition: width var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+}
+
+@media screen and (min-width: 750px) {
+  .sidebar-filters {
+    display: block;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-min-width);
+    max-width: var(--sidebar-max-width);
+  }
+}
+
+.sidebar-filters--collapsed {
+  width: var(--sidebar-collapsed-width);
+  min-width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-filters--collapsed .sidebar-filters__title,
+.sidebar-filters--collapsed .sidebar-filters__count-badge {
+  display: none;
+}
+
+.sidebar-filters--collapsed .sidebar-filters__toggle-arrow {
+  transform: rotate(-90deg);
+}
+
+/* ==========================================================================
+   Sidebar Header
+   ========================================================================== */
+.sidebar-filters__header {
+  padding: var(--sidebar-padding);
+  border-bottom: 1px solid var(--sidebar-border-color);
+  background-color: var(--sidebar-bg);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.sidebar-filters__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-foreground);
+  text-align: left;
+}
+
+.sidebar-filters__toggle:hover {
+  opacity: 0.8;
+}
+
+.sidebar-filters__toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-filters__icon-filter {
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-filters__title {
+  flex: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.sidebar-filters__count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--padding-2xs);
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+}
+
+.sidebar-filters__toggle-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+}
+
+.sidebar-filters--collapsed .sidebar-filters__toggle {
+  justify-content: center;
+}
+
+/* ==========================================================================
+   Sidebar Content
+   ========================================================================== */
+.sidebar-filters__content {
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-height, 60px) - 120px);
+  padding: var(--sidebar-padding);
+  padding-top: 0;
+}
+
+.sidebar-filters__content[hidden] {
+  display: none;
+}
+
+.sidebar-filters__form-wrapper {
+  display: block;
+}
+
+.sidebar-filters__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+/* ==========================================================================
+   Active Filters
+   ========================================================================== */
+.sidebar-filters__active-filters {
+  padding: var(--padding-sm) 0;
+  border-bottom: 1px solid var(--sidebar-border-color);
+  margin-bottom: var(--margin-sm);
+}
+
+/* ==========================================================================
+   Filter Groups
+   ========================================================================== */
+.sidebar-filters__groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-filters__groups .facets__item {
+  border-bottom: 1px solid var(--sidebar-border-color);
+}
+
+.sidebar-filters__groups .facets__item:last-child {
+  border-bottom: none;
+}
+
+.sidebar-filters__groups .facets__panel {
+  margin: 0;
+}
+
+.sidebar-filters__groups .facets__summary {
+  padding: var(--padding-sm) 0;
+}
+
+.sidebar-filters__groups .facets__inputs {
+  padding: 0 0 var(--padding-sm) 0;
+}
+
+/* ==========================================================================
+   Sidebar Actions
+   ========================================================================== */
+.sidebar-filters__actions {
+  padding-top: var(--padding-sm);
+  border-top: 1px solid var(--sidebar-border-color);
+  margin-top: auto;
+}
+
+.sidebar-filters__actions .facets__actions {
+  position: static;
+  padding: 0;
+  background: none;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.sidebar-filters__actions .facets__clear-all {
+  width: 100%;
+  text-align: center;
+}
+
+.sidebar-filters__actions .facets__see-results {
+  display: none;
+}
+
+/* ==========================================================================
+   Mobile Toggle Button
+   ========================================================================== */
+.sidebar-filters-mobile-toggle {
+  display: flex;
+  padding: var(--padding-sm) var(--padding-md);
+}
+
+@media screen and (min-width: 750px) {
+  .sidebar-filters-mobile-toggle {
+    display: none;
+  }
+}
+
+.sidebar-filters-mobile-toggle__button {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--padding-xs) var(--padding-sm);
+  border: 1px solid var(--sidebar-border-color);
+  border-radius: var(--border-radius-base);
+  background-color: var(--sidebar-bg);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sidebar-filters-mobile-toggle__button:hover {
+  background-color: rgb(var(--color-foreground-rgb) / 0.05);
+}
+
+/* ==========================================================================
+   Mobile Drawer
+   ========================================================================== */
+.sidebar-filters-drawer {
+  display: block;
+}
+
+@media screen and (min-width: 750px) {
+  .sidebar-filters-drawer {
+    display: none;
+  }
+}
+
+.sidebar-filters-drawer__dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(90vw, 400px);
+  height: 100vh;
+  max-height: 100vh;
+  padding: 0;
+  background-color: var(--color-background);
+}
+
+.sidebar-filters-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-md);
+  border-bottom: 1px solid var(--sidebar-border-color);
+  background-color: var(--color-background);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.sidebar-filters-drawer__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.sidebar-filters-drawer__close {
+  padding: var(--padding-xs);
+  cursor: pointer;
+}
+
+.sidebar-filters-drawer__form-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar-filters-drawer__form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar-filters-drawer__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--padding-md);
+}
+
+.sidebar-filters-drawer__actions {
+  padding: var(--padding-md);
+  border-top: 1px solid var(--sidebar-border-color);
+  background-color: var(--color-background);
+  position: sticky;
+  bottom: 0;
+}
+
+.sidebar-filters-drawer__actions .facets__actions {
+  position: static;
+  padding: 0;
+  background: none;
+  flex-direction: row;
+}
+
+/* ==========================================================================
+   Collection Controls Bar (Sort, Count, Grid Density)
+   ========================================================================== */
+.collection-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  padding: var(--padding-sm) 0;
+  border-bottom: 1px solid var(--sidebar-border-color);
+  margin-bottom: var(--margin-md);
+}
+
+.collection-controls-bar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.collection-controls-bar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.collection-controls-bar__count {
+  font-size: var(--font-size-sm);
+  color: rgb(var(--color-foreground-rgb) / 0.7);
+}
+
+/* Hide duplicate controls when using sidebar */
+.collection-with-sidebar .facets-toggle {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .collection-with-sidebar .facets-toggle {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   Bubble Badge (shared)
+   ========================================================================== */
+.sidebar-filters__bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 var(--padding-2xs);
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+.sidebar-filters .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+.sidebar-filters__content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-filters__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-filters__content::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--color-foreground-rgb) / 0.2);
+  border-radius: 3px;
+}
+
+.sidebar-filters__content::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--color-foreground-rgb) / 0.3);
+}
+
+/* ==========================================================================
+   Animation States
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .sidebar-filters__content {
+    transition: opacity var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+  }
+
+  .sidebar-filters--collapsed .sidebar-filters__content {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+  .sidebar-filters,
+  .sidebar-filters-mobile-toggle,
+  .sidebar-filters-drawer {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Collection Main Content Area
+   ========================================================================== */
+.collection-main-content {
+  flex: 1;
+  min-width: 0; /* Prevent grid blowout */
+}
+
+.collection-with-sidebar .collection-wrapper {
+  grid-template-columns: 1fr;
+}
+
+.collection-with-sidebar .collection-wrapper--with-sidebar {
+  display: block;
+}
+
+@media screen and (min-width: 750px) {
+  .collection-with-sidebar .collection-wrapper--with-sidebar {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Override facets display when using sidebar filters */
+.collection-with-sidebar .facets-block-wrapper {
+  display: none;
+}
+
+.collection-with-sidebar .facets-toggle {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .collection-with-sidebar .sidebar-filters-mobile-toggle {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media screen and (max-width: 749px) {
+  .collection-with-sidebar {
+    display: block;
+  }
+
+  .collection-main-content {
+    width: 100%;
+  }
+
+  .collection-controls-bar {
+    padding: var(--padding-sm) var(--padding-md);
+  }
+}
+
+/* ==========================================================================
+   Product Grid Integration
+   ========================================================================== */
+.collection-with-sidebar .product-grid-container {
+  width: 100%;
+}
+
+.collection-with-sidebar .main-collection-grid {
+  grid-column: 1 / -1;
+}
