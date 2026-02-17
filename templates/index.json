@@ -12,22 +12,48 @@
     "hero_jVaWmY": {
       "type": "hero",
       "blocks": {
-        "text_YLPk4p": {
+        "text_aNhKwB": {
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
+            "text": "<h1>Factory-Direct Cabinetry for the Trade</h1>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
-            "type_preset": "h2",
+            "type_preset": "rte",
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "line_height": "normal",
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
-            "color": "var(--color-foreground-heading)",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 30,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_jnJKUy": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<h4>Maximize your margins with premium, factory-built kitchen, bath, and bedroom cabinets.</h4>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -55,7 +81,8 @@
         }
       },
       "block_order": [
-        "text_YLPk4p",
+        "text_aNhKwB",
+        "text_jnJKUy",
         "button_H9gpTf"
       ],
       "name": "t:names.hero",
