@@ -6,17 +6,19 @@
 
 /* ==========================================================================
    CSS Custom Properties
+   Scoped to .collection-with-sidebar so we don't override the theme-level
+   --sidebar-width (25rem) that the cart drawer relies on.
    ========================================================================== */
-:root {
-  --sidebar-width: 280px;
-  --sidebar-min-width: 220px;
-  --sidebar-max-width: 320px;
-  --sidebar-collapsed-width: 50px;
-  --sidebar-padding: var(--padding-md);
-  --sidebar-bg: var(--color-background);
-  --sidebar-border-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
-  --sidebar-transition-duration: 0.3s;
-  --sidebar-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+.collection-with-sidebar {
+  --sidebar-filters-width: 280px;
+  --sidebar-filters-min-width: 220px;
+  --sidebar-filters-max-width: 320px;
+  --sidebar-filters-collapsed-width: 50px;
+  --sidebar-filters-padding: var(--padding-md);
+  --sidebar-filters-bg: var(--color-background);
+  --sidebar-filters-border-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+  --sidebar-filters-transition-duration: 0.3s;
+  --sidebar-filters-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==========================================================================
@@ -31,12 +33,12 @@
 
 @media screen and (min-width: 750px) {
   .collection-with-sidebar {
-    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-columns: var(--sidebar-filters-width) 1fr;
     gap: var(--gap-lg);
   }
 
   .collection-with-sidebar.sidebar-collapsed {
-    grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+    grid-template-columns: var(--sidebar-filters-collapsed-width) 1fr;
   }
 }
 
@@ -48,11 +50,11 @@
   visibility: hidden;
   position: absolute;
   left: -9999px;
-  background-color: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border-color);
+  background-color: var(--sidebar-filters-bg);
+  border-right: 1px solid var(--sidebar-filters-border-color);
   height: fit-content;
   overflow: hidden;
-  transition: width var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+  transition: width var(--sidebar-filters-transition-duration) var(--sidebar-filters-transition-easing);
 }
 
 @media screen and (min-width: 750px) {
@@ -63,15 +65,15 @@
     left: auto;
     top: calc(var(--header-height, 60px) + var(--padding-md));
     max-height: calc(100vh - var(--header-height, 60px) - var(--padding-lg));
-    width: var(--sidebar-width);
-    min-width: var(--sidebar-min-width);
-    max-width: var(--sidebar-max-width);
+    width: var(--sidebar-filters-width);
+    min-width: var(--sidebar-filters-min-width);
+    max-width: var(--sidebar-filters-max-width);
   }
 }
 
 .sidebar-filters--collapsed {
-  width: var(--sidebar-collapsed-width);
-  min-width: var(--sidebar-collapsed-width);
+  width: var(--sidebar-filters-collapsed-width);
+  min-width: var(--sidebar-filters-collapsed-width);
 }
 
 .sidebar-filters--collapsed .sidebar-filters__title,
@@ -87,9 +89,9 @@
    Sidebar Header
    ========================================================================== */
 .sidebar-filters__header {
-  padding: var(--sidebar-padding);
-  border-bottom: 1px solid var(--sidebar-border-color);
-  background-color: var(--sidebar-bg);
+  padding: var(--sidebar-filters-padding);
+  border-bottom: 1px solid var(--sidebar-filters-border-color);
+  background-color: var(--sidebar-filters-bg);
   position: sticky;
   top: 0;
   z-index: 2;
@@ -153,7 +155,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+  transition: transform var(--sidebar-filters-transition-duration) var(--sidebar-filters-transition-easing);
 }
 
 .sidebar-filters--collapsed .sidebar-filters__toggle {
@@ -166,7 +168,7 @@
 .sidebar-filters__content {
   overflow-y: auto;
   max-height: calc(100vh - var(--header-height, 60px) - 120px);
-  padding: var(--sidebar-padding);
+  padding: var(--sidebar-filters-padding);
   padding-top: 0;
 }
 
@@ -189,7 +191,7 @@
    ========================================================================== */
 .sidebar-filters__active-filters {
   padding: var(--padding-sm) 0;
-  border-bottom: 1px solid var(--sidebar-border-color);
+  border-bottom: 1px solid var(--sidebar-filters-border-color);
   margin-bottom: var(--margin-sm);
 }
 
@@ -202,7 +204,7 @@
 }
 
 .sidebar-filters__groups .facets__item {
-  border-bottom: 1px solid var(--sidebar-border-color);
+  border-bottom: 1px solid var(--sidebar-filters-border-color);
 }
 
 .sidebar-filters__groups .facets__item:last-child {
@@ -226,7 +228,7 @@
    ========================================================================== */
 .sidebar-filters__actions {
   padding-top: var(--padding-sm);
-  border-top: 1px solid var(--sidebar-border-color);
+  border-top: 1px solid var(--sidebar-filters-border-color);
   margin-top: auto;
 }
 
@@ -266,9 +268,9 @@
   align-items: center;
   gap: var(--gap-xs);
   padding: var(--padding-xs) var(--padding-sm);
-  border: 1px solid var(--sidebar-border-color);
+  border: 1px solid var(--sidebar-filters-border-color);
   border-radius: var(--border-radius-base);
-  background-color: var(--sidebar-bg);
+  background-color: var(--sidebar-filters-bg);
   cursor: pointer;
   font-size: var(--font-size-sm);
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -307,7 +309,7 @@
   left: auto;
   margin: 0;
   transform: translateX(100%);
-  transition: transform var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+  transition: transform var(--sidebar-filters-transition-duration) var(--sidebar-filters-transition-easing);
   z-index: var(--z-index-drawer, 1000);
 }
 
@@ -325,7 +327,7 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--padding-md);
-  border-bottom: 1px solid var(--sidebar-border-color);
+  border-bottom: 1px solid var(--sidebar-filters-border-color);
   background-color: var(--color-background);
   position: sticky;
   top: 0;
@@ -366,7 +368,7 @@
 
 .sidebar-filters-drawer__actions {
   padding: var(--padding-md);
-  border-top: 1px solid var(--sidebar-border-color);
+  border-top: 1px solid var(--sidebar-filters-border-color);
   background-color: var(--color-background);
   position: sticky;
   bottom: 0;
@@ -389,7 +391,7 @@
   flex-wrap: wrap;
   gap: var(--gap-sm);
   padding: var(--padding-sm) 0;
-  border-bottom: 1px solid var(--sidebar-border-color);
+  border-bottom: 1px solid var(--sidebar-filters-border-color);
   margin-bottom: var(--margin-md);
 }
 
@@ -478,7 +480,7 @@
    ========================================================================== */
 @media (prefers-reduced-motion: no-preference) {
   .sidebar-filters__content {
-    transition: opacity var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+    transition: opacity var(--sidebar-filters-transition-duration) var(--sidebar-filters-transition-easing);
   }
 
   .sidebar-filters--collapsed .sidebar-filters__content {
