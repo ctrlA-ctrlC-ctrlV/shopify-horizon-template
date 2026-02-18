@@ -1,0 +1,187 @@
+/* ==========================================================================
+   Kitchen Cabinets Page – Custom Styles
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Banner
+   -------------------------------------------------------------------------- */
+.kc-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: clip;
+  color: var(--kc-banner-text-color, #fff);
+  contain: layout style;
+}
+
+/* Height variants */
+.kc-banner--small  { min-height: 300px; }
+.kc-banner--medium { min-height: 450px; }
+.kc-banner--large  { min-height: 600px; }
+
+@media screen and (max-width: 749px) {
+  .kc-banner--small  { min-height: 220px; }
+  .kc-banner--medium { min-height: 320px; }
+  .kc-banner--large  { min-height: 420px; }
+}
+
+/* Background media */
+.kc-banner__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.kc-banner__image,
+.kc-banner__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.kc-banner__media--placeholder {
+  background-color: var(--color-background-secondary, #e5e5e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kc-banner__media--placeholder svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+/* Overlay */
+.kc-banner__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, var(--kc-banner-overlay-opacity, 0.4));
+  pointer-events: none;
+}
+
+/* Content */
+.kc-banner__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-block: var(--padding-3xl);
+  padding-inline: var(--page-margin, 1.5rem);
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+.kc-banner__heading {
+  margin: 0 0 var(--padding-sm) 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15;
+  font-weight: var(--font-weight-bold, 700);
+  color: inherit;
+  text-wrap: balance;
+}
+
+.kc-banner__subheading {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.5;
+  opacity: 0.9;
+  color: inherit;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   Search bar
+   -------------------------------------------------------------------------- */
+.kc-search {
+  padding-block: var(--padding-lg);
+  padding-inline: var(--page-margin, 1.5rem);
+}
+
+.kc-search__form {
+  max-width: 560px;
+  margin-inline: auto;
+}
+
+.kc-search__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--sidebar-border-color, rgb(0 0 0 / 0.15));
+  border-radius: 999px;
+  background-color: var(--color-background, #fff);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kc-search__input-wrapper:focus-within {
+  border-color: var(--color-accent, currentColor);
+  box-shadow: 0 0 0 2px rgb(var(--color-accent-rgb, 0 0 0) / 0.15);
+}
+
+.kc-search__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline-start: var(--padding-md);
+  color: var(--color-foreground-secondary, #666);
+  flex-shrink: 0;
+}
+
+.kc-search__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: var(--padding-sm) var(--padding-md);
+  font-size: 1rem;
+  color: var(--color-foreground);
+  outline: none;
+  min-width: 0;
+  font-family: inherit;
+}
+
+.kc-search__input::placeholder {
+  color: var(--color-foreground-secondary, #999);
+}
+
+.kc-search__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-xs);
+  margin-inline-end: var(--padding-sm);
+  color: var(--color-foreground-secondary, #666);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.15s ease;
+}
+
+.kc-search__clear:hover {
+  background-color: rgb(0 0 0 / 0.06);
+}
+
+.kc-search__clear[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   No-results message shown by JS
+   -------------------------------------------------------------------------- */
+.kc-search__no-results {
+  text-align: center;
+  padding-block: var(--padding-3xl);
+  color: var(--color-foreground-secondary, #666);
+  font-size: 1.1rem;
+}
+
+.kc-search__no-results strong {
+  color: var(--color-foreground);
+}
+
+/* --------------------------------------------------------------------------
+   Product grid item visibility during search
+   -------------------------------------------------------------------------- */
+.product-grid__item[data-kc-hidden="true"] {
+  display: none !important;
+}

@@ -112,12 +112,7 @@
         {%- comment -%} Active Filters Pills {%- endcomment -%}
         {% if is_active %}
           <div class="sidebar-filters__active-filters">
-            {% render 'filter-remove-buttons',
-              filters: filters,
-              results_url: results_url,
-              show_filter_label: true,
-              should_show_clear_all: true
-            %}
+            {% render 'filter-remove-buttons', filters: filters, results_url: results_url, show_filter_label: true, should_show_clear_all: true %}
           </div>
         {% endif %}
 
@@ -126,21 +121,11 @@
           {%- for filter in filters -%}
             {% case filter.type %}
               {% when 'price_range' %}
-                {%- render 'price-filter',
-                  filter: filter,
-                  filter_style: 'vertical',
-                  should_render_clear: false
-                -%}
+                {%- render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false -%}
               {% else %}
                 {%- liquid
                   assign active_value_count = filter.active_values | size
-                  render 'list-filter',
-                    filter: filter,
-                    filter_style: 'vertical',
-                    active_value_count: active_value_count,
-                    should_render_clear: false,
-                    show_swatch_label: block_settings.show_swatch_label,
-                    sectionId: section.id
+                  render 'list-filter', filter: filter, filter_style: 'vertical', active_value_count: active_value_count, should_render_clear: false, show_swatch_label: block_settings.show_swatch_label, sectionId: section.id
                 -%}
             {% endcase %}
           {%- endfor -%}
@@ -148,13 +133,7 @@
 
         {%- comment -%} Sidebar Actions {%- endcomment -%}
         <div class="sidebar-filters__actions">
-          {% render 'facets-actions',
-            results_url: results_url,
-            is_active: is_active,
-            products_count: products_count,
-            should_show_clear_all: true,
-            clear_all_button_style: 'button-unstyled'
-          %}
+          {% render 'facets-actions', results_url: results_url, is_active: is_active, products_count: products_count, should_show_clear_all: true, clear_all_button_style: 'button-unstyled' %}
         </div>
       </form>
     </facets-form-component>
@@ -226,12 +205,7 @@
           {%- comment -%} Active Filters Pills {%- endcomment -%}
           {% if is_active %}
             <div class="sidebar-filters__active-filters">
-              {% render 'filter-remove-buttons',
-                filters: filters,
-                results_url: results_url,
-                show_filter_label: true,
-                should_show_clear_all: false
-              %}
+              {% render 'filter-remove-buttons', filters: filters, results_url: results_url, show_filter_label: true, should_show_clear_all: false %}
             </div>
           {% endif %}
 
@@ -240,22 +214,11 @@
             {%- for filter in filters -%}
               {% case filter.type %}
                 {% when 'price_range' %}
-                  {%- render 'price-filter',
-                    filter: filter,
-                    filter_style: 'vertical',
-                    should_render_clear: false
-                  -%}
+                  {%- render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false -%}
                 {% else %}
                   {%- liquid
                     assign active_value_count = filter.active_values | size
-                    render 'list-filter',
-                      filter: filter,
-                      filter_style: 'vertical',
-                      active_value_count: active_value_count,
-                      should_render_clear: false,
-                      in_drawer: true,
-                      show_swatch_label: block_settings.show_swatch_label,
-                      sectionId: section.id
+                    render 'list-filter', filter: filter, filter_style: 'vertical', active_value_count: active_value_count, should_render_clear: false, in_drawer: true, show_swatch_label: block_settings.show_swatch_label, sectionId: section.id
                   -%}
               {% endcase %}
             {%- endfor -%}
@@ -263,28 +226,14 @@
 
           {%- comment -%} Sorting in Drawer (Mobile) {%- endcomment -%}
           {% if block_settings.enable_sorting %}
-            {% render 'sorting',
-              results: collection,
-              sort_by: sort_by,
-              filter_style: 'vertical',
-              suffix: 'drawer',
-              should_use_select_on_mobile: false,
-              section_id: section.id
-            %}
+            {% render 'sorting', results: collection, sort_by: sort_by, filter_style: 'vertical', suffix: 'drawer', should_use_select_on_mobile: false, section_id: section.id %}
           {% endif %}
         </scroll-hint>
       </form>
     </facets-form-component>
 
     <div class="sidebar-filters-drawer__actions">
-      {% render 'facets-actions',
-        results_url: results_url,
-        is_active: is_active,
-        products_count: products_count,
-        form_component: 'SidebarFiltersFormDrawer--' | append: section.id,
-        should_show_clear_all: true,
-        clear_all_button_style: 'button-secondary'
-      %}
+      {% render 'facets-actions', results_url: results_url, is_active: is_active, products_count: products_count, form_component: 'SidebarFiltersFormDrawer--' | append: section.id, should_show_clear_all: true, clear_all_button_style: 'button-secondary' %}
     </div>
   </dialog>
 </dialog-component>

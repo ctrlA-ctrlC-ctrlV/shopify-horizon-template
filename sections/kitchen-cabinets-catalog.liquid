@@ -1,0 +1,430 @@
+{%- comment -%}
+  Kitchen Cabinets Catalog Section
+  Renders a product grid with sidebar filters and a built-in search bar.
+  Reuses the existing sidebar-filters snippet and product-grid snippet
+  from the Horizon template so theme updates don't break this section.
+{%- endcomment -%}
+
+{{ 'sidebar-filters.css' | asset_url | stylesheet_tag }}
+{{ 'kitchen-cabinets.css' | asset_url | stylesheet_tag }}
+
+<script
+  src="{{ 'results-list.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<script
+  src="{{ 'kitchen-cabinets-search.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% javascript %}
+  const url = new URL(window.location.href);
+  if (url.hash) {
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        const card = document.getElementById(url.hash.slice(1));
+        if (card) {
+          card.scrollIntoView({ behavior: 'instant' });
+        }
+      },
+      { once: true }
+    );
+  }
+{% endjavascript %}
+
+{%- liquid
+  assign enable_sidebar_filters  = section.settings.enable_sidebar_filters
+  assign sidebar_default_collapsed = section.settings.sidebar_default_collapsed
+  assign enable_search           = section.settings.enable_search
+-%}
+
+{%- comment -%} Main wrapper {%- endcomment -%}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<results-list
+  class="section product-grid-container color-{{ section.settings.color_scheme }}"
+  style="--padding-block-start: {{ section.settings.padding-block-start }}px; --padding-block-end: {{ section.settings.padding-block-end }}px;"
+  section-id="{{ section.id }}"
+  infinite-scroll="{{ section.settings.enable_infinite_scroll }}"
+>
+  {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
+
+  {%- comment -%}
+    ========================
+    Search bar (above grid)
+    ========================
+  {%- endcomment -%}
+  {%- if enable_search -%}
+    <div class="kc-search page-width" data-kc-search>
+      <form class="kc-search__form" role="search" action="{{ collection.url }}" method="get" data-kc-search-form>
+        <label for="kc-search-input-{{ section.id }}" class="visually-hidden">
+          Search kitchen cabinets
+        </label>
+        <div class="kc-search__input-wrapper">
+          <span class="kc-search__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            id="kc-search-input-{{ section.id }}"
+            class="kc-search__input"
+            name="q"
+            placeholder="Search kitchen cabinets…"
+            autocomplete="off"
+            value="{{ collection.current_filters | map: 'q' | first }}"
+            data-kc-search-input
+          >
+          <button
+            type="button"
+            class="kc-search__clear button-unstyled"
+            aria-label="Clear search"
+            data-kc-search-clear
+            hidden
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+      <p class="kc-search__status visually-hidden" aria-live="polite" data-kc-search-status></p>
+    </div>
+  {%- endif -%}
+
+  {% if enable_sidebar_filters %}
+    {%- comment -%} Sidebar layout wrapper {%- endcomment -%}
+    <div class="collection-with-sidebar{% if sidebar_default_collapsed %} sidebar-collapsed{% endif %}">
+      {%- comment -%} Render sidebar filters {%- endcomment -%}
+      {% render 'sidebar-filters',
+        collection: collection,
+        section: section,
+        block_settings: section.settings
+      %}
+
+      {%- comment -%} Main content area {%- endcomment -%}
+      <div class="collection-main-content">
+        {%- comment -%} Controls bar {%- endcomment -%}
+        <div class="collection-controls-bar">
+          <div class="collection-controls-bar__left">
+            <span class="collection-controls-bar__count" data-testid="products-count">
+              {% if collection.products_count > 25000 %}
+                {{- 'content.item_count_cutoff' | t: count: 25000 -}}
+              {% else %}
+                {{- 'content.item_count' | t: count: collection.products_count -}}
+              {% endif %}
+            </span>
+          </div>
+          <div class="collection-controls-bar__right">
+            {% if section.settings.enable_sorting %}
+              <facets-form-component section-id="{{ section.id }}">
+                <form action="{{ collection.url }}" id="SortingForm--{{ section.id }}" ref="facetsForm">
+                  {% render 'sorting',
+                    results: collection,
+                    sort_by: collection.sort_by | default: collection.default_sort_by,
+                    filter_style: 'horizontal',
+                    suffix: 'sidebar',
+                    sort_position: 'desktop',
+                    should_use_select_on_mobile: false,
+                    section_id: section.id
+                  %}
+                </form>
+              </facets-form-component>
+            {% endif %}
+            {% if section.settings.enable_grid_density %}
+              {% render 'grid-density-controls', viewport: 'desktop' %}
+            {% endif %}
+          </div>
+        </div>
+  {% endif %}
+
+  {%- comment -%}
+    ========================
+    Product grid
+    ========================
+  {%- endcomment -%}
+  <div
+    class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}{% if enable_sidebar_filters %} collection-wrapper--with-sidebar{% endif %}"
+  >
+    {% unless enable_sidebar_filters %}
+      {% content_for 'block',
+        type: 'filters',
+        id: 'filters',
+        results: collection,
+        results_size: collection.products_count
+      %}
+    {% endunless %}
+
+    {% assign products_per_page = 24 %}
+
+    {% if section.settings.enable_infinite_scroll == false %}
+      {% assign products_per_page = section.settings.products_per_page %}
+    {% endif %}
+
+    {% paginate collection.products by products_per_page %}
+      {% capture children %}
+        {% for product in collection.products %}
+          <li
+            id="{{ section.id }}-{{ product.id }}"
+            class="product-grid__item product-grid__item--{{ forloop.index0 }}"
+            data-page="{{ paginate.current_page }}"
+            data-product-id="{{ product.id }}"
+            data-product-title="{{ product.title | downcase | escape }}"
+            data-product-type="{{ product.type | downcase | escape }}"
+            data-product-vendor="{{ product.vendor | downcase | escape }}"
+            ref="cards[]"
+          >
+            {% # theme-check-disable %}
+            {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+            {% # theme-check-enable %}
+          </li>
+        {% endfor %}
+      {% endcapture %}
+
+      {% render 'product-grid',
+        section: section,
+        children: children,
+        products: collection.products,
+        paginate: paginate,
+        enable_infinite_scroll: section.settings.enable_infinite_scroll
+      %}
+    {% endpaginate %}
+  </div>
+
+  {% if enable_sidebar_filters %}
+      </div>{%- comment -%} .collection-main-content {%- endcomment -%}
+    </div>{%- comment -%} .collection-with-sidebar {%- endcomment -%}
+  {% endif %}
+</results-list>
+
+{% stylesheet %}
+  .kc-catalog .main-collection-grid {
+    grid-column: var(--grid-column--mobile);
+
+    @media screen and (min-width: 750px) {
+      grid-column: var(--grid-column--desktop);
+    }
+  }
+
+  .collection-wrapper {
+    @media screen and (min-width: 750px) {
+      grid-template-columns:
+        1fr repeat(
+          var(--centered-column-number),
+          minmax(0, calc((var(--page-width) - var(--page-margin) * 2) / var(--centered-column-number)))
+        )
+        1fr;
+    }
+  }
+
+  .collection-wrapper:has(.facets-block-wrapper--full-width),
+  .collection-wrapper:has(.collection-wrapper--full-width) {
+    @media screen and (min-width: 750px) {
+      grid-column: 1 / -1;
+      grid-template-columns:
+        minmax(var(--page-margin), 1fr) repeat(
+          var(--centered-column-number),
+          minmax(0, calc((var(--page-width) - var(--page-margin) * 2) / var(--centered-column-number)))
+        )
+        minmax(var(--page-margin), 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kitchen Cabinets Catalog",
+  "class": "kc-catalog",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Enable product search",
+      "info": "Adds a search bar above the product grid that filters products by title.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product grid"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Layout",
+      "options": [
+        { "value": "grid",    "label": "Grid" },
+        { "value": "organic", "label": "Editorial" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "product_card_size",
+      "label": "Card size",
+      "options": [
+        { "value": "small",       "label": "Small" },
+        { "value": "medium",      "label": "Medium" },
+        { "value": "large",       "label": "Large" },
+        { "value": "extra-large", "label": "Extra large" }
+      ],
+      "default": "medium",
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_product_card_size",
+      "label": "Mobile card size",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_infinite_scroll",
+      "label": "Auto-load products",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 24,
+      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sidebar_filters",
+      "label": "Enable sidebar filters",
+      "info": "Display filters in a sticky sidebar on desktop. Mobile uses a drawer.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sidebar_default_collapsed",
+      "label": "Collapse sidebar by default",
+      "default": false,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_grid_density",
+      "label": "Enable grid density controls",
+      "default": true,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatch_label",
+      "label": "Show swatch labels",
+      "default": false,
+      "visible_if": "{{ section.settings.enable_sidebar_filters == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "product_grid_width",
+      "label": "Width",
+      "options": [
+        { "value": "centered",   "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_on_mobile",
+      "label": "Full width on mobile",
+      "default": true,
+      "visible_if": "{{ section.settings.product_grid_width != 'full-width' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_horizontal",
+      "label": "Horizontal gap",
+      "min": 0, "max": 50, "step": 1, "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_vertical",
+      "label": "Vertical gap",
+      "min": 0, "max": 50, "step": 1, "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kitchen Cabinets Catalog"
+    }
+  ]
+}
+{% endschema %}
