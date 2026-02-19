@@ -9,7 +9,7 @@
           "type": "social_link",
           "settings": {
             "platform": "tiktok",
-            "url": "https://www.tiktok.com/@sdeal.ie",
+            "url": "https://www.tiktok.com/@tradecabinets",
             "label": "TikTok"
           }
         },
@@ -29,16 +29,16 @@
       "settings": {
         "section_width": "page-width",
         "color_scheme": "scheme-1",
-        "logo_text": "Modular House",
-        "description": "Modular House is a premier specialist in steel frame construction, dedicated to transforming homes with precision and speed. We deliver bespoke, energy-efficient garden rooms and house extensions designed for modern living and built to last a lifetime.",
+        "logo_text": "Trade Cabinets",
+        "description": "Trade Cabinets is a leading Irish manufacturer of house cabinets, wardrobes, and storage solutions, committed to delivering exceptional quality and craftsmanship. From bespoke kitchens to custom storage, we design and build furniture that combines style, functionality, and lasting durability for every home",
         "contact_heading": "Contact",
-        "email": "info@sdeal.ie",
+        "email": "info@tradecabinets.ie",
         "phone": "(+353) 0830280000",
-        "address": "<p>Unit 8,<br>Finches Business Park,<br>Long Mile road Dublin 12,<br>D12 N9YV<\/p>",
+        "address": "<p>Unit 8,<br>Finches Business Park,<br>Long Mile road,<br>Dublin 12,<br>D12 N9YV<\/p>",
         "nav_heading": "Links",
         "menu": "main-menu",
         "social_heading": "Get in Touch",
-        "credits": "Built by Zhaoxiang Qiu",
+        "credits": "",
         "padding-block-start": 60,
         "padding-block-end": 20
       }
