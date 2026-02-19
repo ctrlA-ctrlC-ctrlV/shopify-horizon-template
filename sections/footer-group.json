@@ -1,16 +1,48 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "custom_footer_section": {
+      "type": "custom-footer",
+      "blocks": {
+        "social_tiktok": {
+          "type": "social_link",
+          "settings": {
+            "platform": "tiktok",
+            "url": "https://www.tiktok.com/@sdeal.ie",
+            "label": "TikTok"
+          }
+        },
+        "social_facebook": {
+          "type": "social_link",
+          "settings": {
+            "platform": "facebook",
+            "url": "https://www.facebook.com/share/14UYzG2TMHN/?mibextid=wwXIfr",
+            "label": "Facebook"
+          }
+        }
+      },
+      "block_order": [
+        "social_tiktok",
+        "social_facebook"
+      ],
+      "settings": {
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "logo_text": "Modular House",
+        "description": "Modular House is a premier specialist in steel frame construction, dedicated to transforming homes with precision and speed. We deliver bespoke, energy-efficient garden rooms and house extensions designed for modern living and built to last a lifetime.",
+        "contact_heading": "Contact",
+        "email": "info@sdeal.ie",
+        "phone": "(+353) 0830280000",
+        "address": "<p>Unit 8,<br>Finches Business Park,<br>Long Mile road Dublin 12,<br>D12 N9YV<\/p>",
+        "nav_heading": "Links",
+        "menu": "main-menu",
+        "social_heading": "Get in Touch",
+        "credits": "Built by Zhaoxiang Qiu",
+        "padding-block-start": 60,
+        "padding-block-end": 20
+      }
+    },
     "footer_m9NzUG": {
       "type": "footer",
       "blocks": {
@@ -205,6 +237,7 @@
     }
   },
   "order": [
+    "custom_footer_section",
     "footer_m9NzUG",
     "footer_utilities_jLGE8U"
   ]
