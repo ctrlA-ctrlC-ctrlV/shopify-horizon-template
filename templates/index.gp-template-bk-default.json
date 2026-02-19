@@ -15,7 +15,8 @@
   "sections": {
     "hero_jVaWmY": {
       "block_order": [
-        "text_YLPk4p",
+        "text_aNhKwB",
+        "text_jnJKUy",
         "button_H9gpTf"
       ],
       "blocks": {
@@ -34,7 +35,7 @@
           },
           "type": "button"
         },
-        "text_YLPk4p": {
+        "text_aNhKwB": {
           "blocks": {},
           "name": "t:names.heading",
           "settings": {
@@ -42,19 +43,45 @@
             "background": false,
             "background_color": "#00000026",
             "case": "none",
-            "color": "var(--color-foreground-heading)",
+            "color": "var(--color-foreground)",
             "corner_radius": 0,
             "font": "var(--font-body--family)",
             "font_size": "1rem",
             "letter_spacing": "normal",
             "line_height": "normal",
             "max_width": "normal",
+            "padding-block-end": 30,
+            "padding-block-start": 0,
+            "padding-inline-end": 0,
+            "padding-inline-start": 0,
+            "text": "<h1>Factory-Direct Cabinetry for the Trade</h1>",
+            "type_preset": "rte",
+            "width": "fit-content",
+            "wrap": "pretty"
+          },
+          "type": "text"
+        },
+        "text_jnJKUy": {
+          "blocks": {},
+          "name": "t:names.text",
+          "settings": {
+            "alignment": "left",
+            "background": false,
+            "background_color": "#00000026",
+            "case": "none",
+            "color": "var(--color-foreground)",
+            "corner_radius": 0,
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "letter_spacing": "normal",
+            "line_height": "normal",
+            "max_width": "none",
             "padding-block-end": 0,
             "padding-block-start": 0,
             "padding-inline-end": 0,
             "padding-inline-start": 0,
-            "text": "<p>Browse our latest products</p>",
-            "type_preset": "h2",
+            "text": "<h4>Maximize your margins with premium, factory-built kitchen, bath, and bedroom cabinets.</h4>",
+            "type_preset": "rte",
             "width": "fit-content",
             "wrap": "pretty"
           },
@@ -72,6 +99,8 @@
         "gradient_direction": "to bottom",
         "horizontal_alignment": "space-between",
         "horizontal_alignment_flex_direction_column": "center",
+        "image_1": "shopify://shop_images/showroom_color_selection.png",
+        "link": "",
         "media_type_1": "image",
         "media_type_1_mobile": "image",
         "media_type_2": "image",
