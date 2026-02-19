@@ -237,8 +237,8 @@
     }
   },
   "order": [
-    "custom_footer_section",
     "footer_m9NzUG",
+    "custom_footer_section",
     "footer_utilities_jLGE8U"
   ]
 }
