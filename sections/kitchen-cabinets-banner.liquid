@@ -78,8 +78,8 @@
     {% endif %}
     "mainEntity": {
       "@type": "ItemList",
-      "name": "Kitchen Cabinets Catalogue",
-      "description": "Browse our full range of kitchen cabinets including base units, wall units, tall units and accessories.",
+      "name": "{{ heading | escape }} Catalogue",
+      "description": "Browse our full range of {{ heading | downcase }}.",
       "numberOfItems": {{ collection.products_count | default: 0 }}
     }
   }

@@ -61,7 +61,7 @@
     <div class="kc-search page-width" data-kc-search>
       <form class="kc-search__form" role="search" action="{{ collection.url }}" method="get" data-kc-search-form>
         <label for="kc-search-input-{{ section.id }}" class="visually-hidden">
-          Search kitchen cabinets
+          Search {{ collection.title | default: 'kitchen cabinets' }}
         </label>
         <div class="kc-search__input-wrapper">
           <span class="kc-search__icon" aria-hidden="true">
@@ -75,7 +75,7 @@
             id="kc-search-input-{{ section.id }}"
             class="kc-search__input"
             name="q"
-            placeholder="Search kitchen cabinets…"
+            placeholder="Search {{ collection.title | default: 'kitchen cabinets' }}…"
             autocomplete="off"
             value="{{ collection.current_filters | map: 'q' | first }}"
             data-kc-search-input
